@@ -1,8 +1,47 @@
 //Dusk Pattern
 //Feature: Bugs slice
 
-import { createAction, createReducer } from "@reduxjs/toolkit";
+//3 createSlice
+import { createSlice } from "@reduxjs/toolkit";
+let lastId = 0;
 
+const slice = createSlice({
+  name: "bugs",
+  initialState: [],
+  reducers: {
+    //actions => action handlers
+    // Here bugAdded is the action type not a actions object
+    bugAdded: (bugs, action) => {
+      bugs.push({
+        id: ++lastId,
+        description: action.payload.description,
+        resolved: false,
+      });
+    },
+
+    bugResolved: (bugs, action) => {
+      const index = bugs.findIndex((bug) => bug.id === action.payload.id);
+      bugs[index].resolved = true;
+    },
+
+    bugRemoved: (bugs, action) => {
+      console.log("State before removing the bug:", bugs);
+      const stateObj = JSON.parse(JSON.stringify(bugs));
+      console.log("stateObj:", stateObj);
+      console.log("Action:", action);
+      return bugs.filter((bug) => bug.id !== action.payload.id);
+    },
+  },
+});
+
+console.log("slice ", slice);
+
+export const { bugAdded, bugRemoved, bugResolved } = slice.actions;
+
+export default slice.reducer;
+/*
+import { createAction, createReducer } from "@reduxjs/toolkit";
+//2
 // const bugUpdated = createAction("bugUpdated");
 // console.log(bugUpdated({ id: 1 }));
 // console.log(bugUpdated.type);
@@ -44,7 +83,8 @@ export default createReducer([], {
     return bugs.filter((bug) => bug.id !== action.payload.id);
   },
 });
-
+*/
+//1
 //actionTypes
 // const BUG_ADDED = "bugAdded";
 // const BUG_REMOVED = "bugRemoved";
